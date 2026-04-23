@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Admin configuration and role storage",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin"]
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      },
+      "required": ["email", "role", "createdAt"]
+    },
+    "UnlockedUser": {
+      "title": "Unlocked User",
+      "description": "A user email that has been unlocked to bypass usage constraints",
+      "type": "object",
+      "properties": {
+        "unlocked": {
+          "type": "boolean"
+        },
+        "unlockedAt": {
+          "type": "string"
+        },
+        "unlockedBy": {
+          "type": "string"
+        }
+      },
+      "required": ["unlocked", "unlockedAt", "unlockedBy"]
+    }
+  },
+  "firestore": {
+    "/admins/{uid}": {
+      "schema": {
+        "$ref": "#/entities/Admin"
+      },
+      "description": "Stores admin roles. UID is the Firebase Auth UID."
+    },
+    "/unlocked_users/{emailId}": {
+      "schema": {
+        "$ref": "#/entities/UnlockedUser"
+      },
+      "description": "Stores unlocked users by their email as document ID."
+    }
+  }
+}

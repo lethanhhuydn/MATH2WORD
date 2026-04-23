@@ -1,0 +1,76 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Primitives
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isSignedIn() { 
+      return request.auth != null && request.auth.token.email_verified == true; 
+    }
+    
+    // Admin checking: Is stored in admins collection OR is the hardcoded superadmin
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) || 
+        request.auth.token.email == "huyspdn@gmail.com"
+      );
+    }
+
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-\\.]+$'); 
+    }
+
+    function isValidEmailId(id) { 
+      // Allows @ and . for email addresses
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-\\.\\@]+$'); 
+    }
+
+    // Schema Validation: Admin
+    function isValidAdmin(data) {
+      return data.keys().hasAll(['email', 'role', 'createdAt']) && 
+             data.keys().size() == 3 &&
+             data.email is string && data.email.size() <= 128 &&
+             data.role == 'admin' &&
+             data.createdAt == request.time;
+    }
+
+    // Schema Validation: UnlockedUser
+    function isValidUnlockedUser(data) {
+      return data.keys().hasAll(['unlocked', 'unlockedAt', 'unlockedBy']) && 
+             data.keys().size() == 3 &&
+             data.unlocked is bool &&
+             data.unlocked == true &&
+             data.unlockedAt == request.time &&
+             data.unlockedBy is string && data.unlockedBy.size() <= 128 && data.unlockedBy == request.auth.uid;
+    }
+
+    // Admins Collection
+    match /admins/{uid} {
+      // Admins can read the registry
+      allow read: if isAdmin();
+      
+      // Creating a new admin is allowed by existing admins
+      allow create: if isAdmin() && isValidId(uid) && isValidAdmin(incoming()) && incoming().email != null;
+      
+      allow update, delete: if false; // Immutable for now
+    }
+
+    // Unlocked Users Collection
+    match /unlocked_users/{emailId} {
+      // The user themselves can check if they are unlocked, OR admins can read
+      allow get: if isSignedIn() && isValidEmailId(emailId) && (request.auth.token.email == emailId || isAdmin());
+      allow list: if isAdmin();
+
+      // Only admins can unlock users or revoke
+      allow create: if isAdmin() && isValidEmailId(emailId) && isValidUnlockedUser(incoming());
+      allow update: if false; // Just delete and recreate if needed
+      allow delete: if isAdmin();
+    }
+  }
+}

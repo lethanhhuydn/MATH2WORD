@@ -1,0 +1,9 @@
+{
+  "name": "GPT Math to Word",
+  "description": "Convert ChatGPT Math/Physics/Chemistry formulas (LaTeX) directly into Word compatible formats.",
+  "requestFramePermissions": [
+    "clipboard-write",
+    "clipboard-read"
+  ],
+  "majorCapabilities": []
+}
