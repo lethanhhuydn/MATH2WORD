@@ -1,20 +1,37 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Formula Flow - Trình Chuyển Đổi Công Thức Toán Học
 
-# Run and deploy your AI Studio app
+Formula Flow là một ứng dụng web tiện ích hỗ trợ chuyển đổi mã công thức LaTeX thành các định dạng thuận tiện cho việc sao chép và dán trực tiếp vào phần mềm Microsoft Word.
 
-This contains everything you need to run your app locally.
+## Tính Năng Chính
+- **Chuyển đổi trực tiếp:** Biến đổi các đoạn mã LaTeX thông thường hoặc Markdown chứa LaTeX sang nội dung dễ đọc.
+- **Copy For Word:** Hỗ trợ Copy toàn bộ text và công thức hệ thống ở định dạng MathML, giữ nguyên độ hiển thị chuẩn Word mà không bị lỗi font hay bị tách chữ.
+- **Export .doc:** Tải ngay kết quả dưới dạng file MS Word dễ dàng lưu trữ.
+- **Giới hạn tự động:** Hạn chế số lượt sử dụng miễn phí mỗi IP (tối đa 5 lượt/ngày).
+- **Hệ thống Quản Trị / Email:** Cho phép quản trị viên (Admin) mở khóa giới hạn bằng cách cấp quyền thông qua xác thực Email bằng Google Login.
 
-View your app in AI Studio: https://ai.studio/apps/84315992-df62-40f6-81b0-37e4a39b6da0
+## Công Nghệ
+- **React.js (Vite)**
+- **Tailwind CSS**
+- **KaTeX** & **Marked.js**
+- **Firebase Auth & Firestore**
 
-## Run Locally
+## Cài đặt cấu hình (Local Development)
 
-**Prerequisites:**  Node.js
+1. Clone kho lưu trữ:
+\`\`\`bash
+git clone ...
+cd ...
+\`\`\`
 
+2. Cài đặt các thư viện:
+\`\`\`bash
+npm install
+\`\`\`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+3. Chạy giao diện dev server:
+\`\`\`bash
+npm run dev
+\`\`\`
+
+***
+*Developed by Thầy Lê Thanh Huy - TH1P.*
